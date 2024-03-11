@@ -2,8 +2,6 @@ import React from "react";
 import { getArticles } from "./utils/api-calls";
 import { useEffect, useState } from "react";
 import ArticleCard from "./ArticleCard";
-import { experimentalStyled as styled } from "@mui/material/styles";
-import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Pagination from "@mui/material/Pagination";
