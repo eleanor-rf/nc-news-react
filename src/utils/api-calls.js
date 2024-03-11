@@ -21,16 +21,28 @@ function getArticles(page = 1, limit) {
     });
 }
 
-function getArticleById(id){
-    return ncNewsApi
-      .get(`/articles/${id}`)
-      .then((response) => {
-        const article = response.data.article;
-        return { article };
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+function getArticleById(id) {
+  return ncNewsApi
+    .get(`/articles/${id}`)
+    .then((response) => {
+      const article = response.data.article;
+      return { article };
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 }
 
-export { getArticles, getArticleById };
+function getCommentsById(id) {
+  return ncNewsApi
+    .get(`articles/${id}/comments`)
+    .then((response) => {
+      const comments = response.data.comments;
+      return { comments };
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export { getArticles, getArticleById, getCommentsById };
