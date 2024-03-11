@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { getArticleById } from "./utils/api-calls";
+import { getArticleById, getCommentsById } from "./utils/api-calls";
 import { useState, useEffect } from "react";
 import { formatDateString } from "./utils/utils";
 import Button from "@mui/material/Button";
@@ -10,15 +10,20 @@ import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
+import CommentCard from "./CommentCard";
 
 function ViewArticle() {
   const [displayedArticle, setDisplayedArticle] = useState({});
+  const [comments, setComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
   useEffect(() => {
     getArticleById(id).then((data) => {
       setDisplayedArticle(data.article);
       setIsLoading(false);
+    });
+    getCommentsById(id).then((data) => {
+      setComments(data.comments);
     });
   }, []);
 
@@ -29,8 +34,8 @@ function ViewArticle() {
       </Box>
     );
   return (
-    <Box my={4} display="flex" alignItems="center" p={2}>
-      <Paper elevation={3}>
+    <Box display="block" alignItems="center" p={2}>
+      <Paper elevation={3} style={{ padding: "1rem" }}>
         <Typography variant="h4">{displayedArticle.title}</Typography>
 
         <Typography variant="h6">
@@ -55,7 +60,7 @@ function ViewArticle() {
           >
             <ThumbUpIcon />
           </Button>
-          <Typography>{displayedArticle.votes}</Typography>
+          <Typography px={1}>{displayedArticle.votes}</Typography>
           <Button
             style={{
               maxWidth: "30px",
@@ -74,6 +79,12 @@ function ViewArticle() {
           </Button>
         </div>
       </Paper>
+      <Typography variant="h4" mt={2}>
+        {displayedArticle.comment_count} Comments
+      </Typography>
+      {comments.map((comment) => {
+        return <CommentCard comment={comment} />;
+      })}
     </Box>
   );
 }
