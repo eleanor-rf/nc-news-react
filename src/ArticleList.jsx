@@ -11,16 +11,29 @@ import Stack from "@mui/material/Stack";
 
 function ArticleList() {
   const [displayedArticles, setDisplayedArticles] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const articlesPerPage = 6;
+
   useEffect(() => {
-    getArticles().then((data) => {
+    getArticles(1, 1000000).then((data) => {
+      const totalArticles = data.articles.length;
+      const maxPages = Math.ceil(totalArticles / articlesPerPage);
+      setTotalPages(maxPages);
+    });
+    getArticles(currentPage, articlesPerPage).then((data) => {
       setDisplayedArticles(data.articles);
     });
-  }, []);
+  }, [currentPage]);
 
   const cardStyle = {
     display: "block",
     width: "auto",
     height: "100%",
+  };
+
+  const handlePageChange = (event, page) => {
+    setCurrentPage(page);
   };
 
   return (
@@ -44,7 +57,12 @@ function ArticleList() {
         })}
       </Grid>
       <Stack spacing={2}>
-        <Pagination count={10} color="primary" />
+        <Pagination
+          count={totalPages}
+          color="primary"
+          page={currentPage}
+          onChange={handlePageChange}
+        />
       </Stack>
     </div>
   );

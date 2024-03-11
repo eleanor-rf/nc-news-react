@@ -4,9 +4,14 @@ const ncNewsApi = axios.create({
   baseURL: "https://nc-news-tu4n.onrender.com/api",
 });
 
-function getArticles() {
+function getArticles(page = 1, limit) {
   return ncNewsApi
-    .get("/articles")
+    .get("/articles", {
+      params: {
+        p: page,
+        limit: limit,
+      },
+    })
     .then((response) => {
       const articles = response.data.articles;
       return { articles };
