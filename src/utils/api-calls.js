@@ -21,4 +21,16 @@ function getArticles(page = 1, limit) {
     });
 }
 
-export { getArticles };
+function getArticleById(id){
+    return ncNewsApi
+      .get(`/articles/${id}`)
+      .then((response) => {
+        const article = response.data.article;
+        return { article };
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+}
+
+export { getArticles, getArticleById };
