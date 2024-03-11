@@ -6,11 +6,14 @@ import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
+import Box from "@mui/material/Box";
+import LinearProgress from "@mui/material/LinearProgress";
 
 function ArticleList() {
   const [displayedArticles, setDisplayedArticles] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
   const articlesPerPage = 6;
 
   useEffect(() => {
@@ -21,6 +24,7 @@ function ArticleList() {
     });
     getArticles(currentPage, articlesPerPage).then((data) => {
       setDisplayedArticles(data.articles);
+      setIsLoading(false);
     });
   }, [currentPage]);
 
@@ -34,6 +38,12 @@ function ArticleList() {
     setCurrentPage(page);
   };
 
+  if (isLoading)
+    return (
+      <Box sx={{ width: "100%" }}>
+        <LinearProgress />
+      </Box>
+    );
   return (
     <div>
       <Grid
