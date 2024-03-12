@@ -2,7 +2,7 @@ import React from "react";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import VoteButtons from "./VoteButtons";
-import { formatDateString } from "./utils/utils";
+import { formatDateString } from "../utils/utils";
 
 function CommentCard({ comment }) {
   return (
@@ -15,7 +15,7 @@ function CommentCard({ comment }) {
         {comment.body}
       </Typography>
       <div style={{ display: "flex" }}>
-        <VoteButtons data={comment}/>
+        <VoteButtons data={comment} />
       </div>
     </Paper>
   );

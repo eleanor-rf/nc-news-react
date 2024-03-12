@@ -4,7 +4,7 @@ import Typography from "@mui/material/Typography";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import { useState } from "react";
-import { vote } from "./utils/api-calls";
+import { vote } from "../utils/api-calls";
 
 function VoteButtons({ data }) {
   const [voteCount, setVoteCount] = useState(data.votes);

@@ -1,29 +1,53 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { getArticleById, getCommentsById } from "./utils/api-calls";
+import { getArticleById, getCommentsById } from "../utils/api-calls";
 import { useState, useEffect } from "react";
-import { formatDateString } from "./utils/utils";
+import { formatDateString } from "../utils/utils";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 import CommentCard from "./CommentCard";
 import VoteButtons from "./VoteButtons";
+import PostCommentForm from "./PostCommentForm";
+import { postComment } from "../utils/api-calls";
+import { useContext } from "react";
+import { UserContext } from "../contexts/UserContext";
 
 function ViewArticle() {
+  const { user, setUser } = useContext(UserContext);
   const [displayedArticle, setDisplayedArticle] = useState({});
   const [comments, setComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [commentCount, setCommentCount] = useState(0);
+  const [err, setErr] = useState(null);
+  const username = user.username;
   const { id } = useParams();
+
   useEffect(() => {
     getArticleById(id).then((data) => {
       setDisplayedArticle(data.article);
+      setCommentCount(data.article.comment_count);
       setIsLoading(false);
     });
     getCommentsById(id).then((data) => {
-      setComments(data.comments);
+      const sortedComments = data.comments.sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      );
+      setComments(sortedComments);
     });
   }, []);
+
+  const addNewComment = (commentBody) => {
+    setCommentCount((currentCount) => currentCount + 1);
+    setErr(null);
+    postComment(id, username, commentBody).then((newCommentFromApi) => {
+      setComments((currentComments) => [newCommentFromApi, ...currentComments]);
+    }).catch((err)=>{
+      setCommentCount((currentCount) => currentCount - 1);
+      setErr("Something went wrong, please try again.");
+    });
+  };
 
   if (isLoading)
     return (
@@ -46,11 +70,13 @@ function ViewArticle() {
         </Typography>
         <VoteButtons data={displayedArticle} />
       </Paper>
+      <PostCommentForm addNewComment={addNewComment} />
+      {err ? <Typography px={1}>{err}</Typography> : null}
       <Typography variant="h4" mt={2}>
-        {displayedArticle.comment_count} Comments
+        {commentCount} Comments
       </Typography>
       {comments.map((comment) => {
-        return <CommentCard comment={comment} key={comment.comment_id}/>;
+        return <CommentCard comment={comment} key={comment.comment_id} />;
       })}
     </Box>
   );

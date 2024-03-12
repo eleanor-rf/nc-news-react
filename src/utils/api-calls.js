@@ -35,7 +35,7 @@ function getArticleById(id) {
 
 function getCommentsById(id) {
   return ncNewsApi
-    .get(`/articles/${id}/comments`)
+    .get(`/articles/${id}/comments?limit=100000`)
     .then((response) => {
       const comments = response.data.comments;
       return { comments };
@@ -50,4 +50,14 @@ function vote(id, integer, endpoint) {
   return ncNewsApi.patch(`/${endpoint}/${id}`, votes);
 }
 
-export { getArticles, getArticleById, getCommentsById, vote };
+function postComment(articleId, username, body) {
+  console.log(articleId, username, body);
+  const data = { username: username, body: body };
+  return ncNewsApi
+    .post(`/articles/${articleId}/comments`, data)
+    .then((response) => {
+      return response.data.comment;
+    });
+}
+
+export { getArticles, getArticleById, getCommentsById, vote, postComment };

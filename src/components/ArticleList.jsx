@@ -1,5 +1,5 @@
 import React from "react";
-import { getArticles } from "./utils/api-calls";
+import { getArticles } from "../utils/api-calls";
 import { useEffect, useState } from "react";
 import ArticleCard from "./ArticleCard";
 import Grid from "@mui/material/Grid";
