@@ -16,7 +16,6 @@ function VoteButtons({ data }) {
     setVoteCount((currentCount) => currentCount + integer);
     setErr(null);
     vote(id, integer, endpoint).catch((err) => {
-      console.log(err);
       setVoteCount((currentCount) => currentCount - integer);
       setErr("Something went wrong, please try again.");
     });
