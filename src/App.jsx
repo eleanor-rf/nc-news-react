@@ -1,9 +1,9 @@
-import { useState } from "react";
-import Footer from "./Footer";
-import Header from "./Header";
-import ArticleList from "./ArticleList";
+import { useContext } from "react";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import ArticleList from "./components/ArticleList";
 import { Routes, Route } from "react-router-dom";
-import ViewArticle from "./ViewArticle";
+import ViewArticle from "./components/ViewArticle";
 
 function App() {
   return (

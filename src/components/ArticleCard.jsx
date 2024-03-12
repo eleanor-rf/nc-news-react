@@ -5,11 +5,10 @@ import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
-import { formatDateString } from "./utils/utils";
+import { formatDateString } from "../utils/utils";
 import VoteButtons from "./VoteButtons";
 
 function ArticleCard({ article }) {
-
   return (
     <>
       <CardMedia component="img" height="140" image={article.article_img_url} />
@@ -22,8 +21,8 @@ function ArticleCard({ article }) {
         </Typography>
       </CardContent>
       <CardActions>
-        <VoteButtons data={article}/>
-        <Button size="small">{article.comment_count} comments</Button>
+        <VoteButtons data={article} />
+        <Link to={`/article/${article.article_id}`}><Button size="small">{article.comment_count} comments</Button></Link>
       </CardActions>
     </>
   );
