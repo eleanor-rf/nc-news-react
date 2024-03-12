@@ -35,7 +35,7 @@ function getArticleById(id) {
 
 function getCommentsById(id) {
   return ncNewsApi
-    .get(`articles/${id}/comments`)
+    .get(`/articles/${id}/comments`)
     .then((response) => {
       const comments = response.data.comments;
       return { comments };
@@ -45,4 +45,9 @@ function getCommentsById(id) {
     });
 }
 
-export { getArticles, getArticleById, getCommentsById };
+function vote(id, integer, endpoint) {
+  const votes = { inc_votes: integer };
+  return ncNewsApi.patch(`/${endpoint}/${id}`, votes);
+}
+
+export { getArticles, getArticleById, getCommentsById, vote };

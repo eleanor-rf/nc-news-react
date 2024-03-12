@@ -4,10 +4,9 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import { Link } from "react-router-dom";
 import { formatDateString } from "./utils/utils";
+import VoteButtons from "./VoteButtons";
 
 function ArticleCard({ article }) {
 
@@ -23,33 +22,7 @@ function ArticleCard({ article }) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button
-          style={{
-            maxWidth: "30px",
-            maxHeight: "30px",
-            minWidth: "30px",
-            minHeight: "30px",
-          }}
-          variant="contained"
-          color="success"
-          name="upvote"
-        >
-          <ThumbUpIcon />
-        </Button>
-        <Typography>{article.votes}</Typography>
-        <Button
-          style={{
-            maxWidth: "30px",
-            maxHeight: "30px",
-            minWidth: "30px",
-            minHeight: "30px",
-          }}
-          variant="contained"
-          color="error"
-          name="downvote"
-        >
-          <ThumbDownIcon />
-        </Button>
+        <VoteButtons data={article}/>
         <Button size="small">{article.comment_count} comments</Button>
       </CardActions>
     </>
