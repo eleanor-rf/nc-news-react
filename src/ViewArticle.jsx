@@ -3,14 +3,12 @@ import { useParams } from "react-router-dom";
 import { getArticleById, getCommentsById } from "./utils/api-calls";
 import { useState, useEffect } from "react";
 import { formatDateString } from "./utils/utils";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 import CommentCard from "./CommentCard";
+import VoteButtons from "./VoteButtons";
 
 function ViewArticle() {
   const [displayedArticle, setDisplayedArticle] = useState({});
@@ -46,44 +44,13 @@ function ViewArticle() {
         <Typography variant="body1" mt={2} mb={2}>
           {displayedArticle.body}
         </Typography>
-        <div style={{ display: "flex" }}>
-          <Button
-            style={{
-              maxWidth: "30px",
-              maxHeight: "30px",
-              minWidth: "30px",
-              minHeight: "30px",
-            }}
-            variant="contained"
-            color="success"
-            name="upvote"
-          >
-            <ThumbUpIcon />
-          </Button>
-          <Typography px={1}>{displayedArticle.votes}</Typography>
-          <Button
-            style={{
-              maxWidth: "30px",
-              maxHeight: "30px",
-              minWidth: "30px",
-              minHeight: "30px",
-            }}
-            variant="contained"
-            color="error"
-            name="downvote"
-          >
-            <ThumbDownIcon />
-          </Button>
-          <Button size="small">
-            {displayedArticle.comment_count} comments
-          </Button>
-        </div>
+        <VoteButtons data={displayedArticle} />
       </Paper>
       <Typography variant="h4" mt={2}>
         {displayedArticle.comment_count} Comments
       </Typography>
       {comments.map((comment) => {
-        return <CommentCard comment={comment} />;
+        return <CommentCard comment={comment} key={comment.comment_id}/>;
       })}
     </Box>
   );
