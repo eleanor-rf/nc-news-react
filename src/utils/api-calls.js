@@ -4,12 +4,13 @@ const ncNewsApi = axios.create({
   baseURL: "https://nc-news-tu4n.onrender.com/api",
 });
 
-function getArticles(page = 1, limit) {
+function getArticles(page = 1, limit, slug) {
   return ncNewsApi
     .get("/articles", {
       params: {
         p: page,
         limit: limit,
+        topic: slug,
       },
     })
     .then((response) => {
@@ -63,6 +64,18 @@ function deleteComment(commentId) {
   return ncNewsApi.delete(`comments/${commentId}`);
 }
 
+function getTopics() {
+  return ncNewsApi
+    .get("/topics")
+    .then((response) => {
+      const topics = response.data.topics;
+      return { topics };
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
 export {
   getArticles,
   getArticleById,
@@ -70,4 +83,5 @@ export {
   vote,
   postComment,
   deleteComment,
+  getTopics,
 };
