@@ -41,12 +41,17 @@ function ViewArticle() {
   const addNewComment = (commentBody) => {
     setCommentCount((currentCount) => currentCount + 1);
     setErr(null);
-    postComment(id, username, commentBody).then((newCommentFromApi) => {
-      setComments((currentComments) => [newCommentFromApi, ...currentComments]);
-    }).catch((err)=>{
-      setCommentCount((currentCount) => currentCount - 1);
-      setErr("Something went wrong, please try again.");
-    });
+    postComment(id, username, commentBody)
+      .then((newCommentFromApi) => {
+        setComments((currentComments) => [
+          newCommentFromApi,
+          ...currentComments,
+        ]);
+      })
+      .catch((err) => {
+        setCommentCount((currentCount) => currentCount - 1);
+        setErr("Something went wrong, please try again.");
+      });
   };
 
   if (isLoading)
@@ -76,7 +81,15 @@ function ViewArticle() {
         {commentCount} Comments
       </Typography>
       {comments.map((comment) => {
-        return <CommentCard comment={comment} key={comment.comment_id} />;
+        return (
+          <CommentCard
+            comment={comment}
+            key={comment.comment_id}
+            setComments={setComments}
+            setCommentCount={setCommentCount}
+            comments={comments}
+          />
+        );
       })}
     </Box>
   );

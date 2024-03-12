@@ -51,7 +51,6 @@ function vote(id, integer, endpoint) {
 }
 
 function postComment(articleId, username, body) {
-  console.log(articleId, username, body);
   const data = { username: username, body: body };
   return ncNewsApi
     .post(`/articles/${articleId}/comments`, data)
@@ -60,4 +59,15 @@ function postComment(articleId, username, body) {
     });
 }
 
-export { getArticles, getArticleById, getCommentsById, vote, postComment };
+function deleteComment(commentId) {
+  return ncNewsApi.delete(`comments/${commentId}`);
+}
+
+export {
+  getArticles,
+  getArticleById,
+  getCommentsById,
+  vote,
+  postComment,
+  deleteComment,
+};
