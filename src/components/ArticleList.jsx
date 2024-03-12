@@ -7,9 +7,12 @@ import Card from "@mui/material/Card";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import LinearProgress from "@mui/material/LinearProgress";
+import { useParams } from "react-router-dom";
 
 function ArticleList() {
+  let { slug } = useParams();
   const [displayedArticles, setDisplayedArticles] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -17,16 +20,22 @@ function ArticleList() {
   const articlesPerPage = 6;
 
   useEffect(() => {
-    getArticles(1, 1000000).then((data) => {
+    setIsLoading(true);
+    getArticles(1, 1000000, slug).then((data) => {
       const totalArticles = data.articles.length;
       const maxPages = Math.ceil(totalArticles / articlesPerPage);
       setTotalPages(maxPages);
+      setCurrentPage(1);
     });
-    getArticles(currentPage, articlesPerPage).then((data) => {
+  }, [slug]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    getArticles(currentPage, articlesPerPage, slug).then((data) => {
       setDisplayedArticles(data.articles);
       setIsLoading(false);
     });
-  }, [currentPage]);
+  }, [currentPage, slug]);
 
   const cardStyle = {
     display: "block",
@@ -45,7 +54,10 @@ function ArticleList() {
       </Box>
     );
   return (
-    <div>
+    <Box>
+      <Typography variant="h4">
+        {slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : "All Articles"}
+      </Typography>
       <Grid
         sx={{ p: 2 }}
         container
@@ -72,7 +84,7 @@ function ArticleList() {
           onChange={handlePageChange}
         />
       </Stack>
-    </div>
+    </Box>
   );
 }
 

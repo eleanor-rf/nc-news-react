@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import ArticleList from "./components/ArticleList";
 import { Routes, Route } from "react-router-dom";
 import ViewArticle from "./components/ViewArticle";
+import TopicList from "./components/TopicList";
 
 function App() {
   return (
@@ -12,6 +13,8 @@ function App() {
       <Routes>
         <Route path="/" element={<ArticleList />} />
         <Route path="/article/:id" element={<ViewArticle />} />
+        <Route path="/topics" element={<TopicList />} />
+        <Route path="/topics/:slug" element={<ArticleList />} />
       </Routes>
       <Footer />
     </div>
