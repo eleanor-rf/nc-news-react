@@ -10,10 +10,6 @@ function DeleteButton({ commentId, setComments, setCommentCount, comments }) {
   const [err, setErr] = useState(null);
   const [originalComments, setOriginalComments] = useState(comments);
 
-  // make the API call
-  //and then update commentCount AND comments FROM VIEWARTICLE oh no i have to pass them all the way down fml
-  // if there's an error setClicked back to true and put a lil msg and undo all the other stuff
-
   const handleDeleteClick = () => {
     setOriginalComments(comments);
     setCommentCount((currentCount) => currentCount - 1);
