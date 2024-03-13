@@ -2,6 +2,7 @@ import React from "react";
 import { getArticles } from "../utils/api-calls";
 import { useEffect, useState } from "react";
 import ArticleCard from "./ArticleCard";
+import SortArticleSelect from "./SortArticleSelect";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Pagination from "@mui/material/Pagination";
@@ -9,7 +10,7 @@ import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import LinearProgress from "@mui/material/LinearProgress";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 
 function ArticleList() {
   let { slug } = useParams();
@@ -17,25 +18,34 @@ function ArticleList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [sortParams, setSortParams] = useState({ sort_by: "", direction: "" });
+  let [searchParams, setSearchParams] = useSearchParams();
   const articlesPerPage = 6;
 
   useEffect(() => {
+    setCurrentPage(1);
+  }, [sortParams, slug]);
+
+  useEffect(() => {
     setIsLoading(true);
+    setSortParams({ sortBy: "", direction: "" });
     getArticles(1, 1000000, slug).then((data) => {
       const totalArticles = data.articles.length;
       const maxPages = Math.ceil(totalArticles / articlesPerPage);
       setTotalPages(maxPages);
-      setCurrentPage(1);
     });
   }, [slug]);
 
   useEffect(() => {
     setIsLoading(true);
-    getArticles(currentPage, articlesPerPage, slug).then((data) => {
-      setDisplayedArticles(data.articles);
-      setIsLoading(false);
-    });
-  }, [currentPage, slug]);
+    const { sort_by, direction } = sortParams;
+    getArticles(currentPage, articlesPerPage, slug, sort_by, direction).then(
+      (data) => {
+        setDisplayedArticles(data.articles);
+        setIsLoading(false);
+      }
+    );
+  }, [currentPage, slug, sortParams]);
 
   const cardStyle = {
     display: "block",
@@ -45,6 +55,13 @@ function ArticleList() {
 
   const handlePageChange = (event, page) => {
     setCurrentPage(page);
+  };
+
+  const handleSubmit = (event, sortBy, direction) => {
+    event.preventDefault();
+    const params = { sort_by: sortBy, direction: direction };
+    setSortParams(params);
+    setSearchParams(params);
   };
 
   if (isLoading)
@@ -58,6 +75,7 @@ function ArticleList() {
       <Typography variant="h4">
         {slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : "All Articles"}
       </Typography>
+      <SortArticleSelect handleSubmit={handleSubmit} />
       <Grid
         sx={{ p: 2 }}
         container
@@ -76,7 +94,7 @@ function ArticleList() {
           );
         })}
       </Grid>
-      <Stack spacing={2}>
+      <Stack spacing={2} direction="row" justifyContent="center">
         <Pagination
           count={totalPages}
           color="primary"

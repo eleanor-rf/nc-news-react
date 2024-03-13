@@ -1,8 +1,9 @@
-import React from 'react'
+import React from "react";
+import Typography from "@mui/material/Typography";
 
 function Footer() {
   return (
-    <div>
+    <Typography mt={2}>
       <a target="_blank" href="https://icons8.com/icon/42835/news">
         News
       </a>{" "}
@@ -10,8 +11,8 @@ function Footer() {
       <a target="_blank" href="https://icons8.com">
         Icons8
       </a>
-    </div>
+    </Typography>
   );
 }
 
-export default Footer
+export default Footer;
