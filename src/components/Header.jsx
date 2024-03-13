@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 function Header() {
   return (
     <>
-      <Typography variant="h2">NC News</Typography>
+      <Typography variant="h2">NC News 🗞️🐕</Typography>
       <Box mb={2}>
         <Link to="/" style={{ marginRight: "15px" }}>
           Home

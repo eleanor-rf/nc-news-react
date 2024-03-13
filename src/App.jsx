@@ -5,6 +5,7 @@ import ArticleList from "./components/ArticleList";
 import { Routes, Route } from "react-router-dom";
 import ViewArticle from "./components/ViewArticle";
 import TopicList from "./components/TopicList";
+import "./app.css";
 
 function App() {
   return (
