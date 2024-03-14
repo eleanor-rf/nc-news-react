@@ -14,6 +14,7 @@ import PostCommentForm from "./PostCommentForm";
 import { postComment } from "../utils/api-calls";
 import { useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
+import Alert from "@mui/material/Alert";
 
 function ViewArticle() {
   const { user, setUser } = useContext(UserContext);
@@ -43,7 +44,7 @@ function ViewArticle() {
       })
       .catch((error) => {
         navigate("/error", {
-          state: ["Article not found"],
+          state: { message: "Article not found" },
         });
       });
   }, []);
@@ -60,7 +61,9 @@ function ViewArticle() {
       })
       .catch((err) => {
         setCommentCount((currentCount) => currentCount - 1);
-        setErr("Something went wrong, please try again.");
+        setErr(
+          err.message ? err.message : "Something went wrong, please try again."
+        );
       });
   };
 
@@ -86,7 +89,13 @@ function ViewArticle() {
         <VoteButtons data={displayedArticle} />
       </Paper>
       <PostCommentForm addNewComment={addNewComment} />
-      {err ? <Typography px={1}>{err}</Typography> : null}
+      {err ? (
+        <Box m={2}>
+          <Alert variant="outlined" severity="error">
+            {err}
+          </Alert>
+        </Box>
+      ) : null}
       <Typography variant="h4" mt={2}>
         {commentCount} Comments
       </Typography>

@@ -56,6 +56,10 @@ function vote(id, integer, endpoint) {
 }
 
 function postComment(articleId, username, body) {
+  if (!body.trim()) {
+    return Promise.reject(new Error("You can't post an empty comment."));
+  }
+
   const data = { username: username, body: body };
   return ncNewsApi
     .post(`/articles/${articleId}/comments`, data)

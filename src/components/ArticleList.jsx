@@ -63,7 +63,7 @@ function ArticleList() {
       })
       .catch((error) => {
         navigate("/error", {
-          state: [error.message],
+          state: { message: error.message },
         });
       });
   }, [slug]);

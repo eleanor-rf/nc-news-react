@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 function ErrorPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const errorMessage = location.state ? location.state[0] : "Unknown Error";
+  const errorMessage = location.state ? location.state.message : "Unknown Error";
 
   useEffect(() => {
     if (errorMessage === "Unknown Error") {
