@@ -1,5 +1,6 @@
 import React from "react";
 import { getArticles } from "../utils/api-calls";
+import { getTopics } from "../utils/api-calls";
 import { useEffect, useState } from "react";
 import ArticleCard from "./ArticleCard";
 import SortArticleSelect from "./SortArticleSelect";
@@ -11,6 +12,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useParams, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function ArticleList() {
   let { slug } = useParams();
@@ -24,6 +26,9 @@ function ArticleList() {
     direction: searchParams.get("direction"),
   });
   const articlesPerPage = 6;
+  const navigate = useNavigate();
+  const [fetchedArticlesSuccessfully, setFetchedArticlesSuccessfully] =
+    useState(false);
 
   useEffect(() => {
     setSortParams({
@@ -40,23 +45,46 @@ function ArticleList() {
     setIsLoading(true);
     setSortParams({ sortBy: "", direction: "" });
     const { sortBy, direction } = sortParams;
-    getArticles(1, 1000000, slug, sortBy, direction).then((data) => {
-      const totalArticles = data.articles.length;
-      const maxPages = Math.ceil(totalArticles / articlesPerPage);
-      setTotalPages(maxPages);
-    });
+    getTopics()
+      .then((response) => {
+        const foundTopic = response.topics.find((item) => item.slug === slug);
+        if (slug && !foundTopic) {
+          throw new Error("Topic not found");
+        }
+      })
+      .then((topicExists) => {
+        return getArticles(1, 1000000, slug, sortBy, direction);
+      })
+      .then((data) => {
+        const totalArticles = data.articles.length;
+        const maxPages = Math.ceil(totalArticles / articlesPerPage);
+        setTotalPages(maxPages);
+        setFetchedArticlesSuccessfully(true);
+      })
+      .catch((error) => {
+        navigate("/error", {
+          state: { message: error.message },
+        });
+      });
   }, [slug]);
 
   useEffect(() => {
-    setIsLoading(true);
-    const { sortBy, direction } = sortParams;
-    getArticles(currentPage, articlesPerPage, slug, sortBy, direction).then(
-      (data) => {
-        setDisplayedArticles(data.articles);
-        setIsLoading(false);
-      }
-    );
-  }, [currentPage, slug, searchParams]);
+    if (fetchedArticlesSuccessfully) {
+      setIsLoading(true);
+      const { sortBy, direction } = sortParams;
+      getArticles(currentPage, articlesPerPage, slug, sortBy, direction).then(
+        (data) => {
+          setDisplayedArticles(data.articles);
+          setIsLoading(false);
+        }
+      );
+    }
+  }, [
+    fetchedArticlesSuccessfully,
+    currentPage,
+    slug,
+    searchParams,
+  ]);
 
   const cardStyle = {
     display: "block",

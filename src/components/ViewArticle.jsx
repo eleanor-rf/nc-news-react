@@ -2,6 +2,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import { getArticleById, getCommentsById } from "../utils/api-calls";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { formatDateString } from "../utils/utils";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
@@ -13,6 +14,7 @@ import PostCommentForm from "./PostCommentForm";
 import { postComment } from "../utils/api-calls";
 import { useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
+import Alert from "@mui/material/Alert";
 
 function ViewArticle() {
   const { user, setUser } = useContext(UserContext);
@@ -23,19 +25,28 @@ function ViewArticle() {
   const [err, setErr] = useState(null);
   const username = user.username;
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    getArticleById(id).then((data) => {
-      setDisplayedArticle(data.article);
-      setCommentCount(data.article.comment_count);
-      setIsLoading(false);
-    });
-    getCommentsById(id).then((data) => {
-      const sortedComments = data.comments.sort(
-        (a, b) => new Date(b.created_at) - new Date(a.created_at)
-      );
-      setComments(sortedComments);
-    });
+    getArticleById(id)
+      .then((data) => {
+        setDisplayedArticle(data.article);
+        setCommentCount(data.article.comment_count);
+        setIsLoading(false);
+      })
+      .then((articleExists) => {
+        getCommentsById(id).then((data) => {
+          const sortedComments = data.comments.sort(
+            (a, b) => new Date(b.created_at) - new Date(a.created_at)
+          );
+          setComments(sortedComments);
+        });
+      })
+      .catch((error) => {
+        navigate("/error", {
+          state: { message: "Article not found" },
+        });
+      });
   }, []);
 
   const addNewComment = (commentBody) => {
@@ -50,7 +61,9 @@ function ViewArticle() {
       })
       .catch((err) => {
         setCommentCount((currentCount) => currentCount - 1);
-        setErr("Something went wrong, please try again.");
+        setErr(
+          err.message ? err.message : "Something went wrong, please try again."
+        );
       });
   };
 
@@ -76,7 +89,13 @@ function ViewArticle() {
         <VoteButtons data={displayedArticle} />
       </Paper>
       <PostCommentForm addNewComment={addNewComment} />
-      {err ? <Typography px={1}>{err}</Typography> : null}
+      {err ? (
+        <Box m={2}>
+          <Alert variant="outlined" severity="error">
+            {err}
+          </Alert>
+        </Box>
+      ) : null}
       <Typography variant="h4" mt={2}>
         {commentCount} Comments
       </Typography>
