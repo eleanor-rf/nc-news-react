@@ -7,10 +7,8 @@ import { Button } from "@mui/material";
 import { useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
 
-function PostCommentForm({ addNewComment }) {
-  const [commentBody, setCommentBody] = useState("");
-
-  const { user, setUser } = useContext(UserContext);
+function PostCommentForm({ addNewComment, commentBody, setCommentBody }) {
+    const { user, setUser } = useContext(UserContext);
 
   const handleBodyChange = (event) => {
     setCommentBody(event.target.value);

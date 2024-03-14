@@ -26,6 +26,7 @@ function ViewArticle() {
   const username = user.username;
   const { id } = useParams();
   const navigate = useNavigate();
+  const [commentBody, setCommentBody] = useState("");
 
   useEffect(() => {
     getArticleById(id)
@@ -58,6 +59,7 @@ function ViewArticle() {
           newCommentFromApi,
           ...currentComments,
         ]);
+        setCommentBody("");
       })
       .catch((err) => {
         setCommentCount((currentCount) => currentCount - 1);
@@ -88,7 +90,11 @@ function ViewArticle() {
         </Typography>
         <VoteButtons data={displayedArticle} />
       </Paper>
-      <PostCommentForm addNewComment={addNewComment} />
+      <PostCommentForm
+        addNewComment={addNewComment}
+        commentBody={commentBody}
+        setCommentBody={setCommentBody}
+      />
       {err ? (
         <Box m={2}>
           <Alert variant="outlined" severity="error">
