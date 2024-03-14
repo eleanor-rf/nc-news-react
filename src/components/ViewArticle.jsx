@@ -2,6 +2,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import { getArticleById, getCommentsById } from "../utils/api-calls";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { formatDateString } from "../utils/utils";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
@@ -23,19 +24,28 @@ function ViewArticle() {
   const [err, setErr] = useState(null);
   const username = user.username;
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    getArticleById(id).then((data) => {
-      setDisplayedArticle(data.article);
-      setCommentCount(data.article.comment_count);
-      setIsLoading(false);
-    });
-    getCommentsById(id).then((data) => {
-      const sortedComments = data.comments.sort(
-        (a, b) => new Date(b.created_at) - new Date(a.created_at)
-      );
-      setComments(sortedComments);
-    });
+    getArticleById(id)
+      .then((data) => {
+        setDisplayedArticle(data.article);
+        setCommentCount(data.article.comment_count);
+        setIsLoading(false);
+      })
+      .then((articleExists) => {
+        getCommentsById(id).then((data) => {
+          const sortedComments = data.comments.sort(
+            (a, b) => new Date(b.created_at) - new Date(a.created_at)
+          );
+          setComments(sortedComments);
+        });
+      })
+      .catch((error) => {
+        navigate("/error", {
+          state: ["Article not found"],
+        });
+      });
   }, []);
 
   const addNewComment = (commentBody) => {

@@ -22,7 +22,7 @@ function getArticles(page = 1, limit, slug, sortBy, direction) {
       return { articles };
     })
     .catch((error) => {
-      console.log(error);
+      return error;
     });
 }
 
@@ -34,7 +34,7 @@ function getArticleById(id) {
       return { article };
     })
     .catch((error) => {
-      console.log(error);
+      return error;
     });
 }
 
@@ -46,7 +46,7 @@ function getCommentsById(id) {
       return { comments };
     })
     .catch((error) => {
-      console.log(error);
+      return error;
     });
 }
 
@@ -76,7 +76,7 @@ function getTopics() {
       return { topics };
     })
     .catch((error) => {
-      console.log(error);
+      return error;
     });
 }
 
