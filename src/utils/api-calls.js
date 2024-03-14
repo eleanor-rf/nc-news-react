@@ -5,14 +5,16 @@ const ncNewsApi = axios.create({
 });
 
 function getArticles(page = 1, limit, slug, sortBy, direction) {
+  if (sortBy === "") sortBy = undefined;
+  if (direction === "") direction = undefined;
   return ncNewsApi
     .get("/articles", {
       params: {
         p: page,
         limit: limit,
         topic: slug,
-        ...(sortBy !== "" && { sort_by: sortBy }),
-        ...(direction !== "" && { order: direction }),
+        sort_by: sortBy,
+        order: direction,
       },
     })
     .then((response) => {

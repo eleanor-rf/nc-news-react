@@ -18,9 +18,19 @@ function ArticleList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
-  const [sortParams, setSortParams] = useState({ sort_by: "", direction: "" });
   let [searchParams, setSearchParams] = useSearchParams();
+  const [sortParams, setSortParams] = useState({
+    sortBy: searchParams.get("sort_by"),
+    direction: searchParams.get("direction"),
+  });
   const articlesPerPage = 6;
+
+  useEffect(() => {
+    setSortParams({
+      sortBy: searchParams.get("sort_by"),
+      direction: searchParams.get("direction"),
+    });
+  }, [searchParams]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -29,7 +39,8 @@ function ArticleList() {
   useEffect(() => {
     setIsLoading(true);
     setSortParams({ sortBy: "", direction: "" });
-    getArticles(1, 1000000, slug).then((data) => {
+    const { sortBy, direction } = sortParams;
+    getArticles(1, 1000000, slug, sortBy, direction).then((data) => {
       const totalArticles = data.articles.length;
       const maxPages = Math.ceil(totalArticles / articlesPerPage);
       setTotalPages(maxPages);
@@ -38,14 +49,14 @@ function ArticleList() {
 
   useEffect(() => {
     setIsLoading(true);
-    const { sort_by, direction } = sortParams;
-    getArticles(currentPage, articlesPerPage, slug, sort_by, direction).then(
+    const { sortBy, direction } = sortParams;
+    getArticles(currentPage, articlesPerPage, slug, sortBy, direction).then(
       (data) => {
         setDisplayedArticles(data.articles);
         setIsLoading(false);
       }
     );
-  }, [currentPage, slug, sortParams]);
+  }, [currentPage, slug, searchParams]);
 
   const cardStyle = {
     display: "block",
@@ -59,9 +70,9 @@ function ArticleList() {
 
   const handleSubmit = (event, sortBy, direction) => {
     event.preventDefault();
-    const params = { sort_by: sortBy, direction: direction };
+    const params = { sortBy: sortBy, direction: direction };
     setSortParams(params);
-    setSearchParams(params);
+    setSearchParams({ sort_by: sortBy, direction: direction });
   };
 
   if (isLoading)

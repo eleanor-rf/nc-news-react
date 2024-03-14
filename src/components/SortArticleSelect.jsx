@@ -4,15 +4,26 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Button from "@mui/material/Button";
-import { useState } from "react";
+import { useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 function SortArticleSelect({ handleSubmit }) {
-  const [sortBy, setSortBy] = useState("");
-  const [direction, setDirection] = useState("");
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+
+  const [sortBy, setSortBy] = useState(queryParams.get("sort_by") || "");
+  const [direction, setDirection] = useState(
+    queryParams.get("direction") || ""
+  );
 
   const handleSortByChange = (event) => {
     setSortBy(event.target.value);
   };
+
+  useEffect(() => {
+    setSortBy(queryParams.get("sort_by") || "");
+    setDirection(queryParams.get("direction") || "");
+  }, [location.search]);
 
   const handleDirectionChange = (event) => {
     setDirection(event.target.value);
