@@ -47,7 +47,7 @@ function TopicList() {
               key={letter}
               onClick={() => scrollToLetter(letter)}
               style={{ minWidth: "30px", padding: "5px", borderRadius: "15px" }}
-              color="success"
+              color="primary"
             >
               {letter}
             </Button>
